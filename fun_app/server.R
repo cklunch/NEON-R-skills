@@ -1,11 +1,11 @@
 shinyServer(function(input,output){
   dummy <- reactive({
     if(input$dist=="Normal")
-      return(rnorm(100))
+      return(rnorm(input$num))
     if(input$dist=="Cauchy")
-      return(rcauchy(100))
+      return(rcauchy(input$num))
     if(input$dist=="Uniform")
-      return(runif(100))
+      return(runif(input$num))
   })
   output$fig <- renderPlot(
     hist(dummy())
