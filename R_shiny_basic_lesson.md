@@ -218,6 +218,54 @@ For learning purposes, it is always great to start from scratch, but using this 
 8. Run the app and cycle through the options!
 
 
+## More reactive inputs
+1. I made the app generate 100 instances of a random variable by default; let's make the number of instances into a user input.
+2. First we need to make an input entry field on the UI:
+
+    ```
+    shinyUI(
+    	fluidPage(
+    		titlePanel("This app is awesome"),
+    		sidebarLayout(
+    			sidebarPanel(
+    				selectInput("dist", 
+    				label="Choose a distribution",
+    				choices=list("Normal","Cauchy","Uniform")),
+    				numericInput("num", label="Input number of samples", value=100)
+    			),
+    			mainPanel(
+    				wellPanel(
+    					p("We're going to put some content here."),
+    					plotOutput("fig")
+    				)
+    			)
+    		)
+    	)
+    )
+    ```
+
+3. value=100 sets the initial value of input$num to 100; if we don't set an initial value the app can't run because it doesn't know what to do with the input.
+4. Now replace the default 100 on the server side with input$num:
+
+    ```
+    shinyServer(function(input,output){
+    	dummy <- reactive({
+    		if(input$dist=="Normal")
+    			return(rnorm(input$num))
+    		if(input$dist=="Cauchy")
+    			return(rcauchy(input$num))
+    		if(input$dist=="Uniform")
+    			return(runif(input$num))
+    	})
+    	output$fig <- renderPlot(
+    		hist(dummy())
+    	)
+    })
+    ```
+
+
+
+
 ## Sharing your app
 There are a few relatively simple options for sharing your app.
 
